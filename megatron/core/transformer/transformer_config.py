@@ -546,15 +546,6 @@ class TransformerConfig(ModelParallelConfig):
     """If True, STAR router uses only the GHA-derived adaptive logits (no interpolation
     with the linear router logits via alpha)."""
 
-    moe_star_gha_lr_schedule: bool = False
-    """If True, schedule the GHA learning rate with the same warmup+decay shape as
-    the main optimizer LR: warmup 0 -> moe_star_gha_lr, then cosine decay to
-    moe_star_gha_lr_min."""
-
-    moe_star_gha_lr_min: float = 0.0
-    """Minimum GHA learning rate at the end of decay (used when
-    moe_star_gha_lr_schedule is True)."""
-
     moe_relu_routing: bool = False
     """Enable ReLU routing (ReMoE)."""
 

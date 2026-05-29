@@ -20,7 +20,7 @@ export HF_DATASETS_TRUST_REMOTE_CODE=1
 # Configuration
 MODEL=star_moe
 ITER=${ITER:-60000}
-CKPT_ROOT=${CKPT_ROOT:-./logs/star_469m_lr4e4_sched_aux_B64_E8_GLR2e-4_to_2e-5}
+CKPT_ROOT=${CKPT_ROOT:-./logs/star_469m_lr4e4_aux_B64_E8_GLR5e-5}
 RESULT_ROOT=${RESULT_ROOT:-./logs/$(basename "$CKPT_ROOT")}
 LM_HARNESS_TASKS="arc_challenge,arc_easy,boolq,hellaswag,piqa,race"
 LAMBADA_DATA=${LAMBADA_DATA:-/path/to/lambada_test.jsonl}
@@ -66,9 +66,7 @@ MOE_ARGS=(
     --moe-token-dispatcher-type alltoall
     --moe-router-pre-softmax
     --moe-star-routing
-    --moe-star-gha-lr 2e-4
-    --moe-star-gha-lr-schedule
-    --moe-star-gha-lr-min 2e-5
+    --moe-star-gha-lr 5e-5
     --moe-grouped-gemm
     --moe-granularity 1
 )
@@ -169,9 +167,7 @@ MOE_ARGS_LAMBADA=(
     --moe-token-dispatcher-type alltoall
     --moe-router-pre-softmax
     --moe-star-routing
-    --moe-star-gha-lr 2e-4
-    --moe-star-gha-lr-schedule
-    --moe-star-gha-lr-min 2e-5
+    --moe-star-gha-lr 5e-5
     --moe-grouped-gemm
     --moe-granularity 1
 )

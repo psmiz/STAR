@@ -3155,12 +3155,6 @@ def _add_moe_args(parser):
     group.add_argument('--moe-star-gha-only', action='store_true',
                        help='Use only the GHA-derived adaptive logits in STAR '
                             'routing (skip interpolation with linear router logits).')
-    group.add_argument('--moe-star-gha-lr-schedule', action='store_true',
-                       help='Apply the main LR schedule shape (warmup + decay) to the '
-                            'STAR GHA learning rate (peak = --moe-star-gha-lr, '
-                            'min = --moe-star-gha-lr-min).')
-    group.add_argument('--moe-star-gha-lr-min', type=float, default=0.0,
-                       help='Minimum GHA learning rate at end of decay.')
     group.add_argument('--moe-relu-routing', action='store_true',
                        help='Enable ReLU routing (ReMoE).')
     group.add_argument('--moe-relu-l1-reg-coeff-init', type=float, default=1e-8,

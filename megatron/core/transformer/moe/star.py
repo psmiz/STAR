@@ -44,14 +44,10 @@ class STARGate(nn.Module):
         self.dim = model_dim
         self.K = num_global_experts
         self.glr = glr
-        self.init_glr = glr
         self.mixing_coef = nn.Parameter(torch.rand(self.K, self.K), requires_grad=True)
         nn.init.orthogonal_(self.mixing_coef)
         self.gha = GHA(self.dim, self.K, learning_rate=self.glr)
         self.alpha = nn.Parameter(torch.zeros(self.K))
-
-    def set_glr(self, value: float):
-        self.gha.lr = value
 
     def update(self, x):
         if self.training:

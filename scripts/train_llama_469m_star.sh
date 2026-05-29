@@ -18,9 +18,8 @@ TRAIN_ITERS=${2:-"60000"}
 MICRO_BATCH_SIZE=${3:-"64"}
 NUM_EXPERTS=${4:-"8"}
 GRANILARITY=${5:-"1"}
-GHA_LR=${6:-"2e-4"}
-GHA_LR_MIN=${GHA_LR_MIN:-"2e-5"}
-PROJECT_NAME=${7:-"star_469m_lr4e4_sched_aux_B64_E8_GLR${GHA_LR}_to_${GHA_LR_MIN}"}
+GHA_LR=${6:-"5e-5"}
+PROJECT_NAME=${7:-"star_469m_lr4e4_aux_B64_E8_GLR${GHA_LR}"}
 
 LOCAL_LOG_PATH="./logs/$PROJECT_NAME"
 CHECKPOINT_PATH="./logs/$PROJECT_NAME"
@@ -148,9 +147,7 @@ MOE_ARGS=(
     --overlap-grad-reduce
     --moe-router-pre-softmax
     --moe-star-routing
-    --moe-star-gha-lr-schedule
     --moe-star-gha-lr $GHA_LR
-    --moe-star-gha-lr-min $GHA_LR_MIN
     --moe-grouped-gemm
     --recompute-granularity selective
     --recompute-modules moe
@@ -188,7 +185,7 @@ MODEL_PARALLEL_ARGS=(
 LOGGING_ARGS=(
     --log-interval 10
     --log-throughput
-    --save-interval 500
+    --save-interval ${SAVE_INTERVAL:-500}
     --eval-interval 1000
     --eval-iters 100
     --save $CHECKPOINT_PATH

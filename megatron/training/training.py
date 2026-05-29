@@ -1363,31 +1363,6 @@ def train_step(forward_step_func, data_iterator, model, optimizer, opt_param_sch
         increment = get_num_microbatches() * args.micro_batch_size * args.data_parallel_size
         opt_param_scheduler.step(increment=increment)
         skipped_iter = 0
-        if getattr(args, 'moe_star_gha_lr_schedule', False):
-            import math
-            sch = opt_param_scheduler
-            n = sch.num_steps
-            max_glr = args.moe_star_gha_lr
-            min_glr = getattr(args, 'moe_star_gha_lr_min', 0.0)
-            if sch.lr_warmup_steps > 0 and n <= sch.lr_warmup_steps:
-                cur_glr = max_glr * n / sch.lr_warmup_steps
-            elif n > sch.lr_decay_steps:
-                cur_glr = min_glr
-            else:
-                num_steps_ = n - sch.lr_warmup_steps
-                decay_steps_ = sch.lr_decay_steps - sch.lr_warmup_steps
-                decay_ratio = num_steps_ / decay_steps_
-                if sch.lr_decay_style == 'cosine':
-                    coeff = 0.5 * (math.cos(math.pi * decay_ratio) + 1.0)
-                elif sch.lr_decay_style == 'linear':
-                    coeff = 1.0 - decay_ratio
-                else:
-                    coeff = 1.0
-                cur_glr = min_glr + coeff * (max_glr - min_glr)
-            for model_chunk in model:
-                for module in model_chunk.modules():
-                    if hasattr(module, 'set_glr'):
-                        module.set_glr(cur_glr)
     else:
         skipped_iter = 1
 

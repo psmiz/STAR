@@ -1,14 +1,6 @@
 # STAR
 
-Reference implementation and evaluation harness for **STAR: Rethinking MoE Routing as Structure-Aware Subspace Learning** (Sumin Park, Noseong Park, ICML 2026). The repo trains and evaluates four Mixture-of-Experts routing variants at two model scales, built on NVIDIA Megatron-LM.
-
-## Overview
-
-Standard MoE gating is a shallow linear projection; expert specialization depends on whether that projection is actually aware of the input distribution. STAR augments standard gating with an evolving low-dimensional routing subspace V learned online via the Generalized Hebbian Algorithm (GHA), combined with a learnable mixing matrix R, and interpolated against the linear gate via per-expert learnable coefficients alpha:
-
-    s = Softmax( sigma(alpha) * l_linear + (1 - sigma(alpha)) * l_GHA )
-
-with `l_linear = x * W_g^T`, `l_GHA = x * Z^T`, `Z = R * V`. V is refreshed at every forward pass by m GHA iterations; R and alpha learn via standard backprop on the task loss. STAR composes with any explicit load-balancing loss.
+Reference implementation and evaluation harness for **STAR: Rethinking MoE Routing as Structure-Aware Subspace Learning** (Sumin Park, Noseong Park, ICML 2026). The repo is built on NVIDIA Megatron-LM.
 
 ## Routing variants
 
@@ -19,7 +11,7 @@ with `l_linear = x * W_g^T`, `l_GHA = x * Z^T`, `Z = R * V`. V is refreshed at e
 | Expert-Choice | `--moe-expert-choice-routing`     | Each expert picks its top-k tokens; auto-balanced by construction            |
 | STAR          | `--moe-star-routing`              | Linear gate + GHA-driven principal-subspace gate, interpolated per expert    |
 
-STAR-specific flags: `--moe-star-gha-lr`, `--moe-star-gha-lr-schedule`, `--moe-star-gha-lr-min`, `--moe-star-gha-only`, `--moe-star-fp32-gate`.
+STAR-specific flags: `--moe-star-gha-lr`, `--moe-star-gha-only`, `--moe-star-fp32-gate`.
 
 ## Repo layout
 
@@ -28,9 +20,6 @@ STAR/
   README.md
   requirements.txt
   pretrain_gpt.py              GPT/LLaMA pre-training entry point
-  data_preprocessing.sh        Pile JSONL -> tokenized binary
-  gpt2-vocab.json              GPT-2 BPE vocab
-  gpt2-merges.txt              GPT-2 BPE merges
   configs/
     llama_182m_star.json       Reference 182M STAR config
   megatron/                    Slim Megatron-LM (core + training + legacy)
@@ -47,16 +36,6 @@ STAR/
   tools/
     preprocess_data.py         Tokenizer for data_preprocessing.sh
 ```
-
-## Setup
-
-Tested with PyTorch 2.4 + CUDA 12.x. Recommended base: NVIDIA NGC PyTorch 24.04+ container, which ships compatible builds of TransformerEngine, Apex, and Flash-Attention.
-
-```
-pip install -r requirements.txt
-```
-
-`transformer-engine`, `apex`, and `flash-attn` must come from CUDA-matched wheels; install them according to the upstream Megatron-LM instructions for your CUDA/PyTorch combination.
 
 ## Dataset
 
@@ -106,7 +85,7 @@ DATA_ROOT=/path/to/pile_gpt_test bash scripts/train_llama_469m_ec.sh
 DATA_ROOT=/path/to/pile_gpt_test bash scripts/train_llama_469m_star.sh
 ```
 
-The STAR launchers default to the best-reported configurations: 182M uses aux loss with GHA LR 5e-5; 469M uses aux loss with scheduled GHA LR (2e-4 cosine-decayed to 2e-5). Override via positional arg 6 (`GHA_LR`) or, for 469M, env var `GHA_LR_MIN`.
+The STAR launchers default to the best-reported configuration: aux loss with GHA LR 5e-5 at both scales. Override via positional arg 6 (`GHA_LR`).
 
 ## Evaluation
 

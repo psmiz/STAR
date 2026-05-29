@@ -186,7 +186,7 @@ MODEL_PARALLEL_ARGS=(
 LOGGING_ARGS=(
     --log-interval 10
     --log-throughput
-    --save-interval 500
+    --save-interval ${SAVE_INTERVAL:-500}
     --eval-interval 1000
     --eval-iters 100
     --save $CHECKPOINT_PATH
