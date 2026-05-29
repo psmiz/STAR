@@ -17,24 +17,27 @@ STAR-specific flags: `--moe-star-gha-lr`, `--moe-star-gha-only`, `--moe-star-fp3
 
 ```
 STAR/
-  README.md
-  requirements.txt
-  pretrain_gpt.py              GPT/LLaMA pre-training entry point
-  configs/
-    llama_182m_star.json       Reference 182M STAR config
-  megatron/                    Slim Megatron-LM (core + training + legacy)
-    core/transformer/moe/      MoE source: router.py, moe_layer.py, star.py, ...
-  scripts/                     Eight launch scripts
-    train_llama_{182m,469m}_{moe,remoe,ec,star}.sh
-  evaluation/
-    lm_harness_eval.py         lm-evaluation-harness wrapper
-    combine_eval_results.py    Aggregates LM-harness + LAMBADA into one JSON
-    run_eval_combined_{moe,remoe,ec,star}_{182m,469m}.sh
-  tasks/                       LAMBADA eval support
-    main.py, eval_utils.py, data_utils.py, finetune_utils.py
-    zeroshot_gpt/              LAMBADA + WikiText103 evaluators
-  tools/
-    preprocess_data.py         Tokenizer for data_preprocessing.sh
+├── pretrain_gpt.py                   # training entry point
+├── gpt_builders.py                   # model spec builders
+├── model_provider.py                 # GPT model factory
+├── data_preprocessing.sh             # Pile JSONL -> tokenized .bin/.idx
+├── gpt2-vocab.json, gpt2-merges.txt  # GPT-2 BPE
+├── megatron/                         # slim Megatron-LM (core + training + legacy)
+│   └── core/transformer/moe/         # routers: star.py, router.py, moe_layer.py
+├── configs/
+│   └── llama_182m_star.json          # reference 182M STAR config
+├── scripts/                          # 8 launch scripts
+│   ├── train_llama_182m_{moe,remoe,ec,star}.sh
+│   └── train_llama_469m_{moe,remoe,ec,star}.sh
+├── evaluation/                       # 8 eval scripts + 2 helpers
+│   ├── lm_harness_eval.py            # lm-evaluation-harness wrapper
+│   ├── combine_eval_results.py       # harness + LAMBADA -> one JSON
+│   ├── run_eval_combined_{moe,remoe,ec,star}_182m.sh
+│   └── run_eval_combined_{moe,remoe,ec,star}_469m.sh
+├── tasks/                            # LAMBADA evaluator (from Megatron tasks/)
+│   └── zeroshot_gpt/
+└── tools/
+    └── preprocess_data.py            # tokenizer driver for data_preprocessing.sh
 ```
 
 ## Model architectures
