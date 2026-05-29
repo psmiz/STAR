@@ -1,0 +1,12 @@
+torch>=2.4
+transformers>=4.40
+lm-eval==0.4.2
+datasets
+sentencepiece
+regex
+einops
+wandb
+nltk
+numpy
+pyyaml
+six
