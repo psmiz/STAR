@@ -138,7 +138,7 @@ def combine_results(lm_harness_path, lambada_log_path, checkpoint, iteration):
         ('total_average', round(avg_accuracy * 100, 2)),
         ('total_average_decimal', round(avg_accuracy, 4)),
         ('lm_harness_average', round(lm_harness_avg * 100, 2)),
-        ('lambada_accuracy', round(lambada_acc * 100, 2) if lambada_acc else None),
+        ('lambada_accuracy', round(lambada_acc * 100, 2) if lambada_acc is not None else None),
         ('num_tasks', len(task_results)),
     ])
 

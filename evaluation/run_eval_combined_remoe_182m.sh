@@ -20,6 +20,7 @@ export HF_DATASETS_TRUST_REMOTE_CODE=1
 MODEL=moe
 ITER=${ITER:-60000}
 CKPT_ROOT=${CKPT_ROOT:-./logs/remoe_182m_lr4e4_B64_E8}
+RESULT_ROOT=${RESULT_ROOT:-./logs/$(basename "$CKPT_ROOT")}
 NUM_EXPERTS=${NUM_EXPERTS:-8}
 GRANULARITY=${GRANULARITY:-1}
 MOE_RELU_L1_REG_COEFF_INIT=${MOE_RELU_L1_REG_COEFF_INIT:-1e-8}
@@ -27,9 +28,11 @@ MOE_RELU_L1_REG_COEFF_MULTIPLIER=${MOE_RELU_L1_REG_COEFF_MULTIPLIER:-1.2}
 LM_HARNESS_TASKS="arc_challenge,arc_easy,boolq,hellaswag,piqa,race"
 LAMBADA_DATA=${LAMBADA_DATA:-/path/to/lambada_test.jsonl}
 
-LM_HARNESS_RESULTS=${CKPT_ROOT}/eval_results_remoe_${ITER}.json
-LAMBADA_LOG=${CKPT_ROOT}/eval_lambada_remoe_${ITER}.log
-COMBINED_RESULTS=${CKPT_ROOT}/eval_combined_remoe_${ITER}.json
+mkdir -p "$RESULT_ROOT"
+
+LM_HARNESS_RESULTS=${RESULT_ROOT}/eval_results_remoe_182m_${ITER}.json
+LAMBADA_LOG=${RESULT_ROOT}/eval_lambada_remoe_182m_${ITER}.log
+COMBINED_RESULTS=${RESULT_ROOT}/eval_combined_remoe_182m_${ITER}.json
 
 SKIP_IF_EXISTS=${SKIP_IF_EXISTS:-false}
 
