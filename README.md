@@ -37,25 +37,6 @@ STAR/
     preprocess_data.py         Tokenizer for data_preprocessing.sh
 ```
 
-## Dataset
-
-The Pile, raw JSONL format, tokenized to Megatron `.bin`/`.idx` shards via GPT-2 BPE.
-
-1. Place raw Pile shards under `${PILE_RAW}/{00..29}.jsonl`.
-2. Run preprocessing:
-
-```
-PILE_RAW=/path/to/pile_jsonl PILE_OUT=/path/to/pile_gpt_test bash data_preprocessing.sh
-```
-
-3. Point `DATA_ROOT` at the output directory when launching training:
-
-```
-DATA_ROOT=/path/to/pile_gpt_test bash scripts/train_llama_182m_star.sh
-```
-
-LAMBADA eval needs `lambada_test.jsonl` (https://github.com/openai/gpt-2/blob/master/src/lambada_test.jsonl); set `LAMBADA_DATA` when launching evaluation. Split: 969:30:1 train:val:test.
-
 ## Model architectures
 
 | Scale | Layers | Hidden | FFN  | Heads | GQA groups | Seq len | Experts (default) |
@@ -99,22 +80,6 @@ bash evaluation/run_eval_combined_star_182m.sh
 
 Tasks: `arc_challenge`, `arc_easy`, `boolq`, `hellaswag`, `piqa`, `race` (lm-eval-harness) + `LAMBADA` (Megatron task). Output JSON: `${CKPT_ROOT}/eval_combined_<variant>_<scale>_<iter>.json` with per-task accuracy, harness average, LAMBADA accuracy, and the seven-task total average.
 
-## Limitations
-
-- This repo is for fresh training. Legacy ASMG checkpoints from prior internal trees cannot be loaded as-is because every `moe_asmg_*` state-dict key was renamed to `moe_star_*`; a one-time key remap is required to resume.
-- TransformerEngine is not vendored. Install a CUDA-matched build separately.
-- `megatron/post_training/`, `rl/`, and `inference/` were dropped from the slim copy. The training/eval paths do not need them; if you import upstream Megatron features that do, restore those subpackages from the upstream source.
-
-## Citation
-
-```
-@inproceedings{park2026star,
-  title     = {STAR: Rethinking MoE Routing as Structure-Aware Subspace Learning},
-  author    = {Park, Sumin and Park, Noseong},
-  booktitle = {Proceedings of the 43rd International Conference on Machine Learning (ICML)},
-  year      = {2026},
-}
-```
 
 ## Acknowledgement
 
